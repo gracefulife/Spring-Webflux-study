@@ -4,3 +4,10 @@ spring:
 
 server:
   port: 8090
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0

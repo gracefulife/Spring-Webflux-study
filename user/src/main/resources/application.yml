@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: user
+
+  sleuth:
+    sampler:
+      percentage: 1.0
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    registry-fetch-interval-seconds: 5
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8090/eureka}
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    prefer-ip-address: false
