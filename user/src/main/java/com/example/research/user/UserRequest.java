@@ -4,16 +4,18 @@ import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
+@Getter
 @AllArgsConstructor
-public class UserResponse implements Serializable {
+public class UserRequest implements Serializable {
   private Long no;
   private String name;
   private String cellphone;
 
-  public static UserResponse from(User user) {
-    return new UserResponse(
+  public static UserRequest from(User user) {
+    return new UserRequest(
         user.getNo(), user.getName(), user.getCellphone()
     );
   }

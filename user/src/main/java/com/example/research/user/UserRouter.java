@@ -13,7 +13,9 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class UserRouter {
   @Bean RouterFunction<ServerResponse> apis(UserHandler handler) {
-    return RouterFunctions.route(GET("/api/v1/users")
-        .and(accept(MediaType.APPLICATION_JSON)), handler::fetchAll);
+    return RouterFunctions
+        .route(GET("/api/v1/users").and(accept(MediaType.APPLICATION_JSON)), handler::fetchAll)
+        .andRoute(GET("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
+            request -> handler.fetch(request.bodyToMono(UserRequest.class)));
   }
 }

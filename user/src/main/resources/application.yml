@@ -6,6 +6,11 @@ spring:
     sampler:
       percentage: 1.0
 
+  data:
+    mongodb:
+      host: 192.168.99.100
+      port: 32768
+
 server:
   port: 8080
 
@@ -14,6 +19,7 @@ eureka:
     registry-fetch-interval-seconds: 5
     service-url:
       defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8090/eureka}
+    enabled: false # for dev
   instance:
     lease-renewal-interval-in-seconds: 10
     prefer-ip-address: false

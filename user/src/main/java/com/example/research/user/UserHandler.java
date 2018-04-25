@@ -1,5 +1,6 @@
 package com.example.research.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -11,13 +12,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 public class UserHandler {
+  @Autowired UserRepository userRepository;
+
   public Mono<ServerResponse> fetchAll(ServerRequest request) {
-    Flux<UserResponse> peoples = createMock();
-    return ServerResponse.ok().contentType(APPLICATION_JSON).body(peoples, UserResponse.class);
+    return ServerResponse.ok()
+        .contentType(APPLICATION_JSON)
+        .body(userRepository.findAll().map(UserResponse::from), UserResponse.class);
   }
 
-
-  private static Flux<UserResponse> createMock() {
-    return Flux.just(new UserResponse(1L, "id", "01025920791"));
+  public Mono<ServerResponse> fetch(Mono<UserRequest> request) {
+    return ServerResponse.ok()
+        .contentType(APPLICATION_JSON)
+        .body(request.flatMap(userRequest -> userRepository.findById(userRequest.getNo()))
+            .map(UserResponse::from), UserResponse.class);
   }
 }
