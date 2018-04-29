@@ -8,13 +8,17 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
 public class UserRouter {
   @Bean RouterFunction<ServerResponse> apis(UserHandler handler) {
     return RouterFunctions
-        .route(GET("/api/v1/users").and(accept(MediaType.APPLICATION_JSON)), handler::fetchAll)
+        .route(GET("/api/v1/users").and(accept(MediaType.APPLICATION_JSON)),
+            handler::fetchAll)
+        .andRoute(POST("/api/v1/users").and(accept(MediaType.APPLICATION_JSON)),
+            request -> handler.save(request.bodyToMono(UserRequest.class)))
         .andRoute(GET("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
             request -> handler.fetch(request.bodyToMono(UserRequest.class)));
   }

@@ -26,4 +26,11 @@ public class UserHandler {
         .body(request.flatMap(userRequest -> userRepository.findById(userRequest.getNo()))
             .map(UserResponse::from), UserResponse.class);
   }
+
+  public Mono<ServerResponse> save(Mono<UserRequest> request) {
+    return ServerResponse.ok()
+        .contentType(APPLICATION_JSON)
+        .body(request.flatMap(userRequest -> userRepository.save(User.from(userRequest)))
+            .map(UserResponse::from), UserResponse.class);
+  }
 }
