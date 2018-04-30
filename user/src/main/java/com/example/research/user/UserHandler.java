@@ -6,7 +6,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -34,5 +33,25 @@ public class UserHandler {
         .contentType(APPLICATION_JSON)
         .body(request.flatMap(userRequest -> userRepository.save(User.from(userRequest)))
             .map(UserResponse::from), UserResponse.class);
+  }
+
+  public Mono<ServerResponse> update(ServerRequest request) {
+    final Mono<String> path = Mono.just(request.pathVariable("id"));
+
+    return ServerResponse.ok()
+        .contentType(APPLICATION_JSON)
+        .body(
+            userRepository.findById(path)
+                .zipWith(request.bodyToMono(UserRequest.class))
+                .flatMap(tuples -> {
+                  User user = tuples.getT1();
+                  UserRequest userRequest = tuples.getT2();
+
+                  user.setCellphone(userRequest.getCellphone());
+                  user.setName(userRequest.getName());
+                  return userRepository.save(user);
+                })
+                .map(UserResponse::from), UserResponse.class
+        );
   }
 }

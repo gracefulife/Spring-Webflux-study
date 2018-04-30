@@ -25,6 +25,7 @@ public class UserRouter {
         .andRoute(GET("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
             request -> handler.fetch(Mono.just(request.pathVariable("id"))))
         .andRoute(PUT("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
-            request -> handler.save(request.bodyToMono(UserRequest.class)));
+            handler::update
+        );
   }
 }
