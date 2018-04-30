@@ -7,8 +7,11 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import reactor.core.publisher.Mono;
+
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
@@ -20,6 +23,8 @@ public class UserRouter {
         .andRoute(POST("/api/v1/users").and(accept(MediaType.APPLICATION_JSON)),
             request -> handler.save(request.bodyToMono(UserRequest.class)))
         .andRoute(GET("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
-            request -> handler.fetch(request.bodyToMono(UserRequest.class)));
+            request -> handler.fetch(Mono.just(request.pathVariable("id"))))
+        .andRoute(PUT("/api/v1/users/{id}").and(accept(MediaType.APPLICATION_JSON)),
+            request -> handler.save(request.bodyToMono(UserRequest.class)));
   }
 }

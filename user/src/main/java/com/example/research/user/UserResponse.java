@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserResponse implements Serializable {
-  private Long no;
+  private String no;
   private String name;
   private String cellphone;
 
