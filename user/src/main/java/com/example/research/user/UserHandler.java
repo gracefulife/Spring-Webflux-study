@@ -23,7 +23,6 @@ public class UserHandler {
   }
 
   public Mono<ServerResponse> fetch(Mono<String> request) {
-    log.info("fetch");
     return ServerResponse.ok()
         .contentType(APPLICATION_JSON)
         .body(request.flatMap(userRequest -> userRepository.findById(request).doOnError(Throwable::printStackTrace))
