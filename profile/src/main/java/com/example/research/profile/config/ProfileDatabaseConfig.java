@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 @EnableJpaRepositories(
     entityManagerFactoryRef = "profileEntityManagerFactory",
     transactionManagerRef = "profileTransactionManager",
-    basePackages = "com.example.research.profile.entity"
+    basePackages = "com.example.research.profile.entity.storage"
 )
 public class ProfileDatabaseConfig {
 
