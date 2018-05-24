@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Profile {
-  @Id String id; // user system ID
-  Set<Tag> tags;
+public class Tag {
+  @Id Long id;
+  Set<Profile> profiles;
 }

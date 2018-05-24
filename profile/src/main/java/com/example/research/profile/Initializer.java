@@ -6,6 +6,7 @@ import com.example.research.profile.entity.cache.ProfileRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class Initializer implements CommandLineRunner {
         .thenMany(Flux.just("one", "two")
             .flatMap(titles -> {
               String id = UUID.randomUUID().toString();
-              return this.profileRepository.save(new Profile(id));
+              return this.profileRepository.save(new Profile(id, Collections.emptySet()));
             }))
         .log()
         .subscribe(
