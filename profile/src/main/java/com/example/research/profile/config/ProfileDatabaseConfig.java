@@ -20,8 +20,8 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-    entityManagerFactoryRef = "profileEntityManagerFactory",
-    transactionManagerRef = "profileTransactionManager",
+    entityManagerFactoryRef = "profile_entity_manager",
+    transactionManagerRef = "profile_transaction_manager",
     basePackages = "com.example.research.profile.entity.storage"
 )
 public class ProfileDatabaseConfig {
@@ -40,7 +40,7 @@ public class ProfileDatabaseConfig {
         .build();
   }
 
-  @Bean
+  @Bean(name = "profile_transaction_manager")
   public PlatformTransactionManager profileTransactionManager(
       @Qualifier("profile_entity_manager") EntityManagerFactory profileEntityManagerFactory) {
     return new JpaTransactionManager(profileEntityManagerFactory);

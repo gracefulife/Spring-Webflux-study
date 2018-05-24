@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "tag")
 public class Tag {
+
   @Id
   @Column(name = "no")
   Long no;
