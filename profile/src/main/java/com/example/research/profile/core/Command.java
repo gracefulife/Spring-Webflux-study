@@ -1,4 +1,4 @@
-package com.example.research.profile.entity;
+package com.example.research.profile.core;
 
 import java.io.Serializable;
 
