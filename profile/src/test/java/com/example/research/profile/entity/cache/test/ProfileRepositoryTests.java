@@ -50,6 +50,9 @@ public class ProfileRepositoryTests {
   @BeforeTransaction
   public void setup() {
     connectionFactory.getConnection().flushDb();
+  }
+
+  @Test public void 프로필_조회() {
     final List<Tag> generatedTags = generateRandomTagData();
 
     generatedTags.forEach(generatedTag -> {
@@ -69,9 +72,7 @@ public class ProfileRepositoryTests {
     StepVerifier.create(profileRepository.save(generateProfile(generatedTags)))
         .expectNextCount(1)
         .verifyComplete();
-  }
 
-  @Test public void 프로필_조회() {
     StepVerifier.create(profileRepository.findAll())
         .expectNextCount(1)
         .verifyComplete();

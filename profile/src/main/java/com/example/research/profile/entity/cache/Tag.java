@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Tag {
   @Id Long id;
-  Set<Profile> profiles;
+  Set<String> profileIds;
 }
