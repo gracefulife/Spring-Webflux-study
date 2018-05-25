@@ -33,8 +33,8 @@ import static org.junit.Assert.assertNotNull;
     propagation = Propagation.REQUIRES_NEW,
     rollbackFor = Exception.class
 )
-@ActiveProfiles("dev")
-public class TagRepositoryTest {
+@ActiveProfiles("test")
+public class TagRepositoryTests {
   @Autowired private TagStorageRepository tagStorageRepository;
   @Autowired @Qualifier("profile_entity_manager") EntityManager em;
 

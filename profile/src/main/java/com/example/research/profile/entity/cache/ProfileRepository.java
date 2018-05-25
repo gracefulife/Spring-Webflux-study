@@ -26,10 +26,6 @@ public class ProfileRepository {
   }
 
   public Mono<Profile> save(Profile profile) {
-    if (profile.getId() != null) {
-      String id = UUID.randomUUID().toString();
-      profile.setId(id);
-    }
     return template.<String, Profile>opsForHash().put("profiles", profile.getId(), profile)
         .log()
         .map(p -> profile);

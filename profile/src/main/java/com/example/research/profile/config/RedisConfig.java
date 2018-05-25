@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisConfig {
 
   @Bean
-  public ReactiveRedisConnectionFactory connectionFactory() {
+  public LettuceConnectionFactory connectionFactory() {
     log.info("call redisConnectionFactory");
     return new LettuceConnectionFactory("192.168.99.100", 32768);
   }
