@@ -1,6 +1,8 @@
-package com.example.research.profile.entity.storage;
+package com.example.research.profile.entity.storage.test;
 
 import com.example.research.profile.TestApplicationContext;
+import com.example.research.profile.entity.storage.Tag;
+import com.example.research.profile.entity.storage.TagStorageRepository;
 import com.namics.commons.random.RandomData;
 
 import org.junit.Test;
@@ -14,8 +16,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Integration test for storage entity
@@ -23,24 +29,30 @@ import javax.persistence.EntityManager;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplicationContext.class)
 @Transactional(
-    transactionManager = "profileTransactionManager",
+    transactionManager = "profile_transaction_manager",
     propagation = Propagation.REQUIRES_NEW,
     rollbackFor = Exception.class
 )
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 public class TagRepositoryTest {
   @Autowired private TagStorageRepository tagStorageRepository;
   @Autowired @Qualifier("profile_entity_manager") EntityManager em;
 
   @Test public void 태그_생성() {
-    final Tag tag = generateData();
-    tagStorageRepository.save(tag);
-  }
+    final Tag generatedTag = generateData();
+    Tag savedTag = tagStorageRepository.save(generatedTag);
+    Optional<Tag> foundTag = tagStorageRepository.findById(savedTag.getNo());
 
-  @Test public void 태그_조회() {
+    assertNotNull(savedTag);
+
+    foundTag.map(tag -> {
+      assertEquals(savedTag.getName(), tag.getName());
+      assertEquals(savedTag.getNo(), tag.getNo());
+      return tag;
+    }).orElseThrow(() -> new IllegalStateException("tag must not be null"));
   }
 
   private static Tag generateData() {
-    return new Tag(RandomData.randomLong(), RandomData.name(), LocalDateTime.now(), LocalDateTime.now());
+    return new Tag(RandomData.name(), LocalDateTime.now(), LocalDateTime.now());
   }
 }
