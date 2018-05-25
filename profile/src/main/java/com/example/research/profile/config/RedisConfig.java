@@ -17,8 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class RedisConfig {
 
+  @org.springframework.context.annotation.Profile("test")
   @Bean
-  public LettuceConnectionFactory connectionFactory() {
+  public LettuceConnectionFactory connectionFactoryForTest() {
+    log.info("call redisConnectionFactory");
+    return new LettuceConnectionFactory("192.168.99.100", 32768);
+  }
+
+  @org.springframework.context.annotation.Profile("dev")
+  @Bean
+  public LettuceConnectionFactory connectionFactoryForDev() {
     log.info("call redisConnectionFactory");
     return new LettuceConnectionFactory("192.168.99.100", 32768);
   }
