@@ -1,6 +1,6 @@
 package com.example.research.profile.core;
 
-public interface Event<ID> {
+public interface StoredEvent<ID> {
   ID getIdentifier();
 
   String getType();

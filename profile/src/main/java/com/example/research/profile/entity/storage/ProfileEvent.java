@@ -1,6 +1,6 @@
 package com.example.research.profile.entity.storage;
 
-import com.example.research.profile.core.Event;
+import com.example.research.profile.core.StoredEvent;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ import lombok.Getter;
 @Getter
 @Entity
 @Table(name = "profile_event")
-public class ProfileEvent implements Event<String> {
+public class ProfileEvent implements StoredEvent<String> {
   @Id
   @Column(name = "no", nullable = false)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +38,8 @@ public class ProfileEvent implements Event<String> {
 
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
+
+  public ProfileEvent() {
+    this.createdAt = LocalDateTime.now();
+  }
 }
