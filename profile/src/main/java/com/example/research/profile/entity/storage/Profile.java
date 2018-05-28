@@ -1,5 +1,7 @@
 package com.example.research.profile.entity.storage;
 
+import com.example.research.profile.v1.profile.ProfileSaveRequest;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -44,4 +46,14 @@ public class Profile {
   @CreatedDate
   @LastModifiedDate
   @Column(name = "updated_at") LocalDateTime updatedAt;
+
+  public static Profile from(ProfileSaveRequest request) {
+    Profile profile = new Profile();
+    profile.name = request.getName();
+    profile.age = request.getAge();
+    profile.sex = request.getSex();
+    profile.active = true;
+    profile.createdAt = LocalDateTime.now();
+    return profile;
+  }
 }
