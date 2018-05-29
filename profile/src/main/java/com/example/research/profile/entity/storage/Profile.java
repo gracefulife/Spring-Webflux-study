@@ -49,11 +49,13 @@ public class Profile {
 
   public static Profile from(ProfileSaveRequest request) {
     Profile profile = new Profile();
+    profile.id = request.getId();
     profile.name = request.getName();
     profile.age = request.getAge();
     profile.sex = request.getSex();
     profile.active = true;
     profile.createdAt = LocalDateTime.now();
+    profile.updatedAt = LocalDateTime.now();
     return profile;
   }
 }

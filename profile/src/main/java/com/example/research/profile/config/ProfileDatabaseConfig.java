@@ -34,7 +34,7 @@ public class ProfileDatabaseConfig {
 
   @Bean(name = "profile_entity_manager")
   public LocalContainerEntityManagerFactoryBean profileEntityManagerFactory(
-      @Qualifier("profile_datasource") DataSource dataSource, EntityManagerFactoryBuilder builder) {
+      @Qualifier("profile_datasource") HikariDataSource dataSource, EntityManagerFactoryBuilder builder) {
     return builder.dataSource(dataSource)
         .packages("com.example.research.profile.entity")
         .build();

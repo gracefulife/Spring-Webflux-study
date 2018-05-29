@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
@@ -16,6 +17,8 @@ public class ProfileRouter {
     return RouterFunctions
         .route(GET("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
             handler::fetchProfiles)
+        .andRoute(POST("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
+            request -> handler.save(request.bodyToMono(ProfileSaveRequest.class)))
         .andRoute(GET("/api/v1/profiles/{id}").and(accept(MediaType.APPLICATION_JSON)),
             handler::fetch);
   }
