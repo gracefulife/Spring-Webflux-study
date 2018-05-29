@@ -4,7 +4,6 @@ import com.example.research.profile.entity.cache.Profile;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -32,14 +31,8 @@ public class RedisConfig {
   }
 
   @Bean
-  public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory) {
-    log.info("call reactiveRedisTemplate");
-    return new ReactiveRedisTemplate<>(connectionFactory, RedisSerializationContext.string());
-  }
-
-  @Bean
-  public ReactiveRedisTemplate<String, Profile> reactiveJsonPersonRedisTemplate(
-      ReactiveRedisConnectionFactory connectionFactory) {
+  public ReactiveRedisTemplate<String, Profile> reactiveJsonProfileRedisTemplate(
+      LettuceConnectionFactory connectionFactory) {
     log.info("call reactiveJsonPersonRedisTemplate");
     RedisSerializationContext<String, Profile> serializationContext = RedisSerializationContext
         .<String, Profile>newSerializationContext(new StringRedisSerializer())

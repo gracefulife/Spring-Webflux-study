@@ -22,12 +22,11 @@ public class ProfileRepository {
   }
 
   public Mono<Profile> findById(String id) {
-    return template.<String, Profile>opsForHash().get("profiles", id);
+    return template.<String, Profile>opsForHash().get("profiles", id).single();
   }
 
   public Mono<Profile> save(Profile profile) {
     return template.<String, Profile>opsForHash().put("profiles", profile.getId(), profile)
-        .log()
         .map(p -> profile);
 
   }

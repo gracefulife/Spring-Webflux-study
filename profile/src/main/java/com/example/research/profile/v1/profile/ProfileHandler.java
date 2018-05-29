@@ -19,7 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Slf4j
 @Component
@@ -31,28 +32,27 @@ public class ProfileHandler {
 
   @NonNull
   public Mono<ServerResponse> fetchProfiles(ServerRequest request) {
-    // send Event
-    Flux<Profile> profiles = profileRepository.findAll()
-        .switchIfEmpty(
-            Flux.fromIterable(profileStorageRepository.findAll())
-                .map(Profile::from) // TODO send Event
-        );
-
-    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(profiles, Profile.class);
+    Flux<Profile> profiles = Flux.fromIterable(profileStorageRepository.findAll())
+        .flatMap(profile -> {
+          log.info("call switchIfEmpty");
+          return profileRepository.save(Profile.from(profile));
+        });
+    return ok().contentType(MediaType.APPLICATION_JSON).body(profiles, Profile.class);
   }
 
   @NonNull
   public Mono<ServerResponse> fetch(ServerRequest request) {
     String id = request.pathVariable("id");
     Mono<Profile> profile = profileRepository.findById(id)
-        .switchIfEmpty(
-            Mono.just(
-                profileStorageRepository.findById(id)
-                    .orElseThrow(() -> new IllegalStateException("profile not found"))
-            )
-                .map(Profile::from) // TODO send Event
-        );
-    return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(profile, Profile.class);
+        .onErrorResume(throwable -> {
+          log.error("throwable : ", throwable);
+          return Mono.just(
+              profileStorageRepository.findById(id)
+                  .orElseThrow(() -> new IllegalStateException("profile not found"))
+          )
+              .flatMap(storedProfile -> profileRepository.save(Profile.from(storedProfile)));
+        });
+    return ok().contentType(MediaType.APPLICATION_JSON).body(profile, Profile.class);
   }
 
   @NonNull

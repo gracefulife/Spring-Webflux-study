@@ -13,8 +13,9 @@ import lombok.ToString;
 @Getter
 @RequiredArgsConstructor
 public class ProfileSavedEvent implements ProfileEvent {
-  public static final String ID = ProfileSavedEvent.class.getSimpleName();
+  public static final String TAG = ProfileSavedEvent.class.getSimpleName();
 
+  @NonNull String id;
   @NonNull String name;
   @NonNull Integer age;
   @NonNull String sex; // man, woman
@@ -22,12 +23,13 @@ public class ProfileSavedEvent implements ProfileEvent {
 
   public static ProfileSavedEvent from(Profile storeProfile) {
     return new ProfileSavedEvent(
+        storeProfile.getId(),
         storeProfile.getName(), storeProfile.getAge(),
         storeProfile.getSex(), storeProfile.getCreatedAt()
     );
   }
 
-  @Override public String getId() {
-    return ID;
+  @Override public String getTag() {
+    return TAG;
   }
 }

@@ -22,7 +22,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SpringBootTest(classes = TestApplicationContext.class)
-public class UserApplicationTests {
+public class ProfileRouterTests {
   @Autowired ApplicationContext applicationContext;
 
   private WebTestClient webClient;
@@ -37,11 +37,7 @@ public class UserApplicationTests {
 
   @Test
   public void a_프로필_생성() {
-    ProfileSaveRequest profileSaveRequest = new ProfileSaveRequest(
-        RandomData.randomString(),
-        RandomData.name(), RandomData.randomInteger(1, 80),
-        RandomData.randomBoolean() ? "man" : "woman"
-    );
+    ProfileSaveRequest profileSaveRequest = generate();
     assertNotNull(profileSaveRequest, "profile request must not be null !");
 
     webClient
@@ -62,5 +58,37 @@ public class UserApplicationTests {
         .accept(MediaType.APPLICATION_JSON)
         .exchange()
         .expectStatus().isOk();
+  }
+
+  @Test
+  public void c_프로필_업데이트() {
+    ProfileSaveRequest profileSaveRequest = generate();
+    webClient
+        .post()
+        .uri("/api/v1/profiles")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(profileSaveRequest))
+        .exchange()
+        .expectStatus().isOk();
+
+    profileSaveRequest.setName(profileSaveRequest.getName().toUpperCase());
+
+    webClient
+        .put()
+        .uri("/api/v1/profiles/" + profileSaveRequest.getId())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .body(BodyInserters.fromObject(profileSaveRequest))
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  private ProfileSaveRequest generate() {
+    return new ProfileSaveRequest(
+        RandomData.randomString(),
+        RandomData.name(), RandomData.randomInteger(1, 80),
+        RandomData.randomBoolean() ? "man" : "woman"
+    );
   }
 }

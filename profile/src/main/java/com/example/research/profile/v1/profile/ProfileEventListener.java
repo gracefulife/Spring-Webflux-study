@@ -13,5 +13,6 @@ public class ProfileEventListener {
 
   @EventListener public void onProfileSavedEventReceived(ProfileSavedEvent event) {
     log.info("event received : {}" + event);
+
   }
 }

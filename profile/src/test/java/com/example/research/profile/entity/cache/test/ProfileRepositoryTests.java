@@ -21,16 +21,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.persistence.EntityManager;
 
 import reactor.test.StepVerifier;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplicationContext.class)
@@ -52,6 +55,27 @@ public class ProfileRepositoryTests {
     connectionFactory.getConnection().flushDb();
   }
 
+  @Test public void 프로필_조회_레디스() {
+    final Profile generateProfile = generateProfile();
+
+    // GIVEN
+    StepVerifier.create(profileRepository.save(generateProfile))
+        .expectNextCount(1)
+        .verifyComplete();
+
+    StepVerifier.create(profileRepository.findById(generateProfile.getId()))
+        .expectNext(generateProfile)
+        .verifyComplete();
+
+    Iterable<Profile> profiles = profileRepository.findAll().toIterable();
+    Profile profile = StreamSupport.stream(profiles.spliterator(), false)
+        .filter(generateProfile::equals)
+        .findAny()
+        .orElseThrow(() -> new IllegalStateException("profile must not be null"));
+
+    assertThat(profile, is(generateProfile));
+  }
+
   @Test public void 프로필_조회() {
     final List<Tag> generatedTags = generateRandomTagData();
 
@@ -69,7 +93,7 @@ public class ProfileRepositoryTests {
     });
 
     // to redis
-    StepVerifier.create(profileRepository.save(generateProfile(generatedTags)))
+    StepVerifier.create(profileRepository.save(generateProfile()))
         .expectNextCount(1)
         .verifyComplete();
 
@@ -78,10 +102,11 @@ public class ProfileRepositoryTests {
         .verifyComplete();
   }
 
-  private static Profile generateProfile(List<Tag> tags) {
+  private static Profile generateProfile() {
     return new Profile(
-        RandomData.alphabetic(20),
-        tags.stream().map(Tag::getNo).collect(Collectors.toSet())
+        RandomData.alphabetic(20), RandomData.name(),
+        RandomData.randomInteger(10, 45), RandomData.randomBoolean() ? "man" : "woman",
+        RandomData.randomBoolean(), Collections.emptySet()
     );
   }
 
