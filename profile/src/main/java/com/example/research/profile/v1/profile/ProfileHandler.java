@@ -9,18 +9,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.util.function.Function;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@Service
+@Slf4j
+@Component
 public class ProfileHandler {
   @Autowired ApplicationEventPublisher applicationEventPublisher;
 
@@ -53,6 +55,7 @@ public class ProfileHandler {
     return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(profile, Profile.class);
   }
 
+  @NonNull
   public Mono<ServerResponse> save(Mono<ProfileSaveRequest> request) {
     Function<ProfileSaveRequest, com.example.research.profile.entity.storage.Profile> mapToProfile
         = com.example.research.profile.entity.storage.Profile::from;
@@ -67,10 +70,10 @@ public class ProfileHandler {
     Function<com.example.research.profile.entity.storage.Profile, ProfileSaveResponse> mapToResponse =
         profile -> new ProfileSaveResponse(profile.getId());
 
-    Mono<ProfileSaveResponse> save = request.flatMap(saveProfile.compose(mapToProfile)).map(mapToResponse); // FIXME throw 처리
+    Mono<ProfileSaveResponse> save = request.flatMap(saveProfile.compose(mapToProfile))
+        .map(mapToResponse); // FIXME throw 처리
 
     return ServerResponse.ok()
-        .contentType(APPLICATION_JSON)
         .body(save, ProfileSaveResponse.class);
   }
 }
