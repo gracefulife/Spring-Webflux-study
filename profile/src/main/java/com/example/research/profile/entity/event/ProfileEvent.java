@@ -1,4 +1,4 @@
 package com.example.research.profile.entity.event;
 
-public interface ProfileEvent extends Event {
+public abstract class ProfileEvent implements Event<String> {
 }

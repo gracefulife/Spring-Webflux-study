@@ -42,4 +42,15 @@ public class ProfileEvent implements StoredEvent<String> {
   public ProfileEvent() {
     this.createdAt = LocalDateTime.now();
   }
+
+  public static ProfileEvent from(com.example.research.profile.entity.event.ProfileEvent event,
+                                  Long latestVersion, String payload) {
+    ProfileEvent profileEvent = new ProfileEvent();
+    profileEvent.identifier = event.getId();
+    profileEvent.type = event.getTag();
+    profileEvent.version = latestVersion;
+    profileEvent.payload = payload;
+    profileEvent.createdAt = LocalDateTime.now();
+    return profileEvent;
+  }
 }

@@ -12,7 +12,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @RequiredArgsConstructor
-public class ProfileSavedEvent implements ProfileEvent {
+public class ProfileSavedEvent extends ProfileEvent {
   public static final String TAG = ProfileSavedEvent.class.getSimpleName();
 
   @NonNull String id;

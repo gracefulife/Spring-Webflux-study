@@ -4,19 +4,21 @@ import com.example.research.profile.entity.storage.Profile;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
-public class ProfileChangedEvent implements ProfileEvent {
-  @Getter public static final String ID = ProfileChangedEvent.class.getSimpleName();
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProfileChangedEvent extends ProfileEvent {
+  public static final String TAG = ProfileChangedEvent.class.getSimpleName();
 
-  @NonNull String id;
-  @NonNull String name;
-  @NonNull Integer age;
-  @NonNull String sex; // man, woman
-  @NonNull LocalDateTime createdAt;
+  String id;
+  String name;
+  Integer age;
+  String sex; // man, woman
+  LocalDateTime createdAt;
 
   public static ProfileChangedEvent from(Profile storeProfile) {
     return new ProfileChangedEvent(
@@ -27,6 +29,6 @@ public class ProfileChangedEvent implements ProfileEvent {
   }
 
   @Override public String getTag() {
-    return ID;
+    return TAG;
   }
 }

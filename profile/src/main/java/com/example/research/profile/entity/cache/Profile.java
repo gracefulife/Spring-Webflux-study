@@ -1,5 +1,7 @@
 package com.example.research.profile.entity.cache;
 
+import com.example.research.profile.entity.event.ProfileChangedEvent;
+import com.example.research.profile.entity.event.ProfileSavedEvent;
 import com.example.research.profile.entity.storage.ProfileEvent;
 
 import org.springframework.data.annotation.Id;
@@ -20,7 +22,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Profile {
-  @Id String id; // user system ID
+  @Id String id; // user system TAG
   String name;
   Integer age;
   String sex; // man, woman
@@ -33,15 +35,32 @@ public class Profile {
     return from(profile, Collections.emptySet());
   }
 
+  // 생성 이벤트에서 왔으므로, 항상 active
+  public static Profile from(ProfileSavedEvent event) {
+    return from(event.getId(), event.getName(), event.getAge(),
+        event.getSex(), true, Collections.emptySet());
+  }
+
+  // TODO active 상태
+  public static Profile from(ProfileChangedEvent event) {
+    return from(event.getId(), event.getName(), event.getAge(),
+        event.getSex(), true, Collections.emptySet());
+  }
+
   public static Profile from(com.example.research.profile.entity.storage.Profile profile,
                              Set<ProfileEvent> events) {
-    Profile cache = new Profile();
-    cache.id = profile.getId();
-    cache.name = profile.getName();
-    cache.age = profile.getAge();
-    cache.sex = profile.getSex(); // man, woman
-    cache.active = profile.getActive(); // 활성 유저 ? 프로필에서 판단해주어야 함.
+    return from(profile.getId(), profile.getName(), profile.getAge(),
+        profile.getSex(), profile.getActive(), events);
+  }
 
+  public static Profile from(String id, String name, Integer age,
+                             String sex, Boolean active, Set<ProfileEvent> events) {
+    Profile cache = new Profile();
+    cache.id = id;
+    cache.name = name;
+    cache.age = age;
+    cache.sex = sex;
+    cache.active = active;
     cache.events = events;
     return cache;
   }
