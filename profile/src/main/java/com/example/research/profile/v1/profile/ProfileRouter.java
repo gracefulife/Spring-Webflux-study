@@ -20,7 +20,7 @@ public class ProfileRouter {
             handler::fetchProfiles)
         .andRoute(POST("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
             request -> handler.save(request.bodyToMono(ProfileSaveRequest.class)))
-        .andRoute(PUT("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
+        .andRoute(PUT("/api/v1/profiles/{id}").and(accept(MediaType.APPLICATION_JSON)),
             handler::update)
         .andRoute(GET("/api/v1/profiles/{id}").and(accept(MediaType.APPLICATION_JSON)),
             handler::fetch);

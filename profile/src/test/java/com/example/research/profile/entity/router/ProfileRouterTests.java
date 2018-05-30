@@ -13,15 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+
+import java.util.UUID;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @SpringBootTest(classes = TestApplicationContext.class)
+@ActiveProfiles("test")
 public class ProfileRouterTests {
   @Autowired ApplicationContext applicationContext;
 
@@ -81,12 +85,14 @@ public class ProfileRouterTests {
         .accept(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromObject(profileSaveRequest))
         .exchange()
-        .expectStatus().isOk();
+        .expectStatus().isOk()
+        .expectBody()
+        .jsonPath("$.name").isEqualTo(profileSaveRequest.getName());
   }
 
   private ProfileSaveRequest generate() {
     return new ProfileSaveRequest(
-        RandomData.randomString(),
+        UUID.randomUUID().toString(),
         RandomData.name(), RandomData.randomInteger(1, 80),
         RandomData.randomBoolean() ? "man" : "woman"
     );
