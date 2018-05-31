@@ -1,6 +1,6 @@
 package com.example.research.profile.entity.cache;
 
-import com.example.research.profile.entity.command.ProfileChangedCommand;
+import com.example.research.profile.entity.command.UpdateProfileCommand;
 import com.example.research.profile.entity.command.CreateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileEvent;
 
@@ -42,7 +42,7 @@ public class Profile {
   }
 
   // TODO active 상태
-  public static Profile from(ProfileChangedCommand event) {
+  public static Profile from(UpdateProfileCommand event) {
     return from(event.getId(), event.getName(), event.getAge(),
         event.getSex(), true, Collections.emptySet());
   }

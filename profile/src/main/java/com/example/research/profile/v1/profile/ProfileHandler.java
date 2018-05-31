@@ -3,7 +3,7 @@ package com.example.research.profile.v1.profile;
 import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
 import com.example.research.profile.entity.command.CreateProfileCommand;
-import com.example.research.profile.entity.command.ProfileChangedCommand;
+import com.example.research.profile.entity.command.UpdateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +11,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import java.time.LocalDateTime;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -23,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -69,23 +66,15 @@ public class ProfileHandler {
   @NonNull
   public Mono<ServerResponse> update(ServerRequest request) {
     Mono<ProfileSaveRequest> profileSaveRequestMono = request.bodyToMono(ProfileSaveRequest.class);
-    com.example.research.profile.entity.storage.Profile existProfile = profileStorageRepository
-        .findById(request.pathVariable("id")).orElseThrow(IllegalStateException::new);
 
-    return profileSaveRequestMono.flatMap(requestProfile -> {
-      existProfile.setName(
-          StringUtils.isEmpty(requestProfile.getName()) ?
-              existProfile.getName() : requestProfile.getName()
-      );
-      existProfile.setAge(requestProfile.getAge() == null ? existProfile.getAge() : requestProfile.getAge());
-      existProfile.setSex(requestProfile.getSex() == null ? existProfile.getSex() : requestProfile.getSex());
-      existProfile.setUpdatedAt(LocalDateTime.now());
-      profileStorageRepository.save(existProfile);
+    Function<ProfileSaveRequest, UpdateProfileCommand> requestToCommand = (profileSaveRequest) ->
+        UpdateProfileCommand.from(request.pathVariable("id"), profileSaveRequest);
+    Consumer<UpdateProfileCommand> sendCommand = command -> applicationEventPublisher.publishEvent(command);
 
-      applicationEventPublisher.publishEvent(ProfileChangedCommand.from(existProfile));
-
-      return ok().contentType(MediaType.APPLICATION_JSON).body(fromObject(existProfile))
-          .switchIfEmpty(ServerResponse.badRequest().build());
-    });
+    return profileSaveRequestMono.flatMap(profile -> {
+      sendCommand.accept(requestToCommand.apply(profile));
+      return noContent().build();
+    })
+        .switchIfEmpty(ServerResponse.badRequest().build());
   }
 }

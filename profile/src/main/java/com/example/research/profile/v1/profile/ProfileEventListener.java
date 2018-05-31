@@ -1,9 +1,8 @@
 package com.example.research.profile.v1.profile;
 
-import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
-import com.example.research.profile.entity.command.ProfileChangedCommand;
 import com.example.research.profile.entity.command.CreateProfileCommand;
+import com.example.research.profile.entity.command.UpdateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-/**
- * FIXME profile cache 에 event set 을 들고 있을지 결정하여야 함
- */
 @Slf4j
 @Component
 public class ProfileEventListener {
@@ -31,19 +27,13 @@ public class ProfileEventListener {
         .subscribe();
   }
 
-  @EventListener public void onProfileChangedEventReceived(ProfileChangedCommand event) {
+  // FIXME subscribe 시 memory 누수가 발생하지 않는지 관찰해야함. (dispose 하지 않아도, 될 것 같은데)
+  @EventListener public void onProfileChangedEventReceived(UpdateProfileCommand event) {
     log.info("onProfileChangedEventReceived received : {}" + event);
 
-    Mono.fromCompletionStage(profileEventHandler.save(event))
+    Mono.fromCompletionStage(profileEventHandler.update(event))
         .flatMap(profileEvent -> profileRepository.findById(profileEvent.getIdentifier()))
-        .single()
-        .flatMap(profile -> profileRepository.save(Profile.from(event)))
-        .onErrorResume(throwable -> {
-          log.error("onError: ", throwable);
-          com.example.research.profile.entity.storage.Profile profile = profileStorageRepository
-              .findById(event.getId()).orElseThrow(() -> new IllegalStateException("not found"));
-          return profileRepository.save(Profile.from(profile));
-        })
+        .doOnError(e -> log.error("onProfileSavedEventReceived error : {}", e))
         .subscribe();
   }
 }
