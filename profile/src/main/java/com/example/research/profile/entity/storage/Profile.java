@@ -1,7 +1,6 @@
 package com.example.research.profile.entity.storage;
 
 import com.example.research.profile.entity.command.CreateProfileCommand;
-import com.example.research.profile.v1.profile.ProfileSaveRequest;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

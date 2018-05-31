@@ -1,7 +1,7 @@
 package com.example.research.profile.entity.cache;
 
-import com.example.research.profile.entity.command.UpdateProfileCommand;
 import com.example.research.profile.entity.command.CreateProfileCommand;
+import com.example.research.profile.entity.command.UpdateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileEvent;
 
 import org.springframework.data.annotation.Id;
