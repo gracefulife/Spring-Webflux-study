@@ -71,7 +71,7 @@ public class ProfileEventHandler {
       existProfile.setUpdatedAt(LocalDateTime.now());
       profileStorageRepository.save(existProfile);
 
-      // 2. insert event-data to event-store(RDB)
+      // 2. insert event-data into event-store(RDB)
       Long latestVersion = profileEventStoreRepository.findTopByIdentifierOrderByNoDesc(command.getId())
           .map(com.example.research.profile.entity.storage.ProfileEvent::getVersion)
           .orElse(0L);
