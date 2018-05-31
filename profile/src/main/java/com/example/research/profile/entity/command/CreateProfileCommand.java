@@ -1,6 +1,6 @@
 package com.example.research.profile.entity.command;
 
-import com.example.research.profile.entity.storage.Profile;
+import com.example.research.profile.v1.profile.ProfileSaveRequest;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +12,8 @@ import lombok.ToString;
 @ToString
 @Getter
 @RequiredArgsConstructor
-public class ProfileSavedCommand extends ProfileCommand {
-  public static final String TAG = ProfileSavedCommand.class.getSimpleName();
+public class CreateProfileCommand extends ProfileCommand {
+  public static final String TAG = CreateProfileCommand.class.getSimpleName();
 
   @NonNull String id;
   @NonNull String name;
@@ -21,11 +21,11 @@ public class ProfileSavedCommand extends ProfileCommand {
   @NonNull String sex; // man, woman
   @NonNull LocalDateTime createdAt;
 
-  public static ProfileSavedCommand from(Profile storeProfile) {
-    return new ProfileSavedCommand(
+  public static CreateProfileCommand from(ProfileSaveRequest storeProfile) {
+    return new CreateProfileCommand(
         storeProfile.getId(),
         storeProfile.getName(), storeProfile.getAge(),
-        storeProfile.getSex(), storeProfile.getCreatedAt()
+        storeProfile.getSex(), LocalDateTime.now()
     );
   }
 

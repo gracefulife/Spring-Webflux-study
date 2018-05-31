@@ -3,7 +3,7 @@ package com.example.research.profile.v1.profile;
 import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
 import com.example.research.profile.entity.command.ProfileChangedCommand;
-import com.example.research.profile.entity.command.ProfileSavedCommand;
+import com.example.research.profile.entity.command.CreateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,11 @@ public class ProfileEventListener {
   @Autowired ProfileRepository profileRepository;
   @Autowired ProfileStorageRepository profileStorageRepository;
 
-  @EventListener public void onProfileSavedEventReceived(ProfileSavedCommand event) {
-    log.info("onProfileSavedEventReceived received : {}" + event);
-    profileRepository.save(Profile.from(event))
-        .flatMap(profile -> Mono.fromCompletionStage(profileEventHandler.save(event)))
+  @EventListener public void onProfileSavedEventReceived(CreateProfileCommand command) {
+    log.info("onProfileSavedEventReceived received : {}" + command);
+    Mono.fromCompletionStage(profileEventHandler.save(command))
         .doOnError(e -> log.error("onProfileSavedEventReceived error : {}", e))
-        .onErrorResume(throwable -> profileRepository.deleteById(event.getId()).flatMap(aVoid -> Mono.empty()))
+        .onErrorResume(throwable -> profileRepository.deleteById(command.getId()).flatMap(aVoid -> Mono.empty()))
         .subscribe();
   }
 

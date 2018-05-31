@@ -2,8 +2,8 @@ package com.example.research.profile.v1.profile;
 
 import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
+import com.example.research.profile.entity.command.CreateProfileCommand;
 import com.example.research.profile.entity.command.ProfileChangedCommand;
-import com.example.research.profile.entity.command.ProfileSavedCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.time.LocalDateTime;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.server.ServerResponse.noContent;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Slf4j
@@ -54,24 +56,14 @@ public class ProfileHandler {
 
   @NonNull
   public Mono<ServerResponse> save(Mono<ProfileSaveRequest> request) {
-    Function<ProfileSaveRequest, com.example.research.profile.entity.storage.Profile> mapToProfile
-        = com.example.research.profile.entity.storage.Profile::from;
+    // TODO validation
+    Function<ProfileSaveRequest, CreateProfileCommand> requestToCommand = CreateProfileCommand::from;
+    Consumer<CreateProfileCommand> sendCommand = command -> applicationEventPublisher.publishEvent(command);
 
-    Function<com.example.research.profile.entity.storage.Profile, Mono<com.example.research.profile.entity.storage.Profile>>
-        saveProfile = profile -> {
-      log.info("profile is {}", profile);
-      com.example.research.profile.entity.storage.Profile storeProfile = profileStorageRepository.save(profile);
-      applicationEventPublisher.publishEvent(ProfileSavedCommand.from(storeProfile));
-      return Mono.just(storeProfile);
-    };
-
-    Function<com.example.research.profile.entity.storage.Profile, ProfileSaveResponse> mapToResponse =
-        profile -> new ProfileSaveResponse(profile.getId());
-
-    Mono<ProfileSaveResponse> save = request.flatMap(saveProfile.compose(mapToProfile))
-        .map(mapToResponse); // FIXME throw 처리
-
-    return ok().body(save, ProfileSaveResponse.class);
+    return request.single().flatMap(profile -> {
+      sendCommand.accept(requestToCommand.apply(profile));
+      return noContent().build();
+    });
   }
 
   @NonNull

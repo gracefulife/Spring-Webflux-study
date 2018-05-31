@@ -1,7 +1,7 @@
 package com.example.research.profile.entity.cache;
 
 import com.example.research.profile.entity.command.ProfileChangedCommand;
-import com.example.research.profile.entity.command.ProfileSavedCommand;
+import com.example.research.profile.entity.command.CreateProfileCommand;
 import com.example.research.profile.entity.storage.ProfileEvent;
 
 import org.springframework.data.annotation.Id;
@@ -36,7 +36,7 @@ public class Profile {
   }
 
   // 생성 이벤트에서 왔으므로, 항상 active
-  public static Profile from(ProfileSavedCommand event) {
+  public static Profile from(CreateProfileCommand event) {
     return from(event.getId(), event.getName(), event.getAge(),
         event.getSex(), true, Collections.emptySet());
   }
