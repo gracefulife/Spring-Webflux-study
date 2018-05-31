@@ -51,7 +51,7 @@ public class ProfileRouterTests {
         .accept(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromObject(profileSaveRequest))
         .exchange()
-        .expectStatus().isOk();
+        .expectStatus().isNoContent();
   }
 
   @Test
@@ -74,7 +74,7 @@ public class ProfileRouterTests {
         .accept(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromObject(profileSaveRequest))
         .exchange()
-        .expectStatus().isOk();
+        .expectStatus().isNoContent();
 
     profileSaveRequest.setName(profileSaveRequest.getName().toUpperCase());
 
