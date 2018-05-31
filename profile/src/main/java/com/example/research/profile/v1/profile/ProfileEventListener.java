@@ -2,8 +2,8 @@ package com.example.research.profile.v1.profile;
 
 import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
-import com.example.research.profile.entity.event.ProfileChangedEvent;
-import com.example.research.profile.entity.event.ProfileSavedEvent;
+import com.example.research.profile.entity.command.ProfileChangedCommand;
+import com.example.research.profile.entity.command.ProfileSavedCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class ProfileEventListener {
   @Autowired ProfileRepository profileRepository;
   @Autowired ProfileStorageRepository profileStorageRepository;
 
-  @EventListener public void onProfileSavedEventReceived(ProfileSavedEvent event) {
+  @EventListener public void onProfileSavedEventReceived(ProfileSavedCommand event) {
     log.info("onProfileSavedEventReceived received : {}" + event);
     profileRepository.save(Profile.from(event))
         .flatMap(profile -> Mono.fromCompletionStage(profileEventHandler.save(event)))
@@ -32,7 +32,7 @@ public class ProfileEventListener {
         .subscribe();
   }
 
-  @EventListener public void onProfileChangedEventReceived(ProfileChangedEvent event) {
+  @EventListener public void onProfileChangedEventReceived(ProfileChangedCommand event) {
     log.info("onProfileChangedEventReceived received : {}" + event);
 
     Mono.fromCompletionStage(profileEventHandler.save(event))

@@ -1,6 +1,7 @@
 package com.example.research.profile.entity.storage;
 
 import com.example.research.profile.core.StoredEvent;
+import com.example.research.profile.entity.command.ProfileCommand;
 
 import java.time.LocalDateTime;
 
@@ -43,7 +44,7 @@ public class ProfileEvent implements StoredEvent<String> {
     this.createdAt = LocalDateTime.now();
   }
 
-  public static ProfileEvent from(com.example.research.profile.entity.event.ProfileEvent event,
+  public static ProfileEvent from(ProfileCommand event,
                                   Long latestVersion, String payload) {
     ProfileEvent profileEvent = new ProfileEvent();
     profileEvent.identifier = event.getId();

@@ -1,6 +1,6 @@
 package com.example.research.profile.v1.profile;
 
-import com.example.research.profile.entity.event.ProfileEvent;
+import com.example.research.profile.entity.command.ProfileCommand;
 import com.example.research.profile.entity.storage.ProfileEventStoreRepository;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,7 +26,7 @@ public class ProfileEventHandler {
 
   @Async
   @Transactional
-  public CompletableFuture<com.example.research.profile.entity.storage.ProfileEvent> save(ProfileEvent event) {
+  public CompletableFuture<com.example.research.profile.entity.storage.ProfileEvent> save(ProfileCommand event) {
     return CompletableFuture.supplyAsync(() -> {
       Long latestVersion = profileEventStoreRepository
           .findTopByIdentifierOrderByNoDesc(event.getId())
@@ -40,7 +40,7 @@ public class ProfileEventHandler {
     });
   }
 
-  private String generatePayload(ProfileEvent event) {
+  private String generatePayload(ProfileCommand event) {
     String payload;
     try {
       payload = objectMapper.writeValueAsString(event);

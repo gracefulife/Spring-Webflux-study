@@ -1,4 +1,4 @@
-package com.example.research.profile.entity.event;
+package com.example.research.profile.entity.command;
 
 import com.example.research.profile.entity.storage.Profile;
 
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileChangedEvent extends ProfileEvent {
-  public static final String TAG = ProfileChangedEvent.class.getSimpleName();
+public class ProfileChangedCommand extends ProfileCommand {
+  public static final String TAG = ProfileChangedCommand.class.getSimpleName();
 
   String id;
   String name;
@@ -20,8 +20,8 @@ public class ProfileChangedEvent extends ProfileEvent {
   String sex; // man, woman
   LocalDateTime createdAt;
 
-  public static ProfileChangedEvent from(Profile storeProfile) {
-    return new ProfileChangedEvent(
+  public static ProfileChangedCommand from(Profile storeProfile) {
+    return new ProfileChangedCommand(
         storeProfile.getId(),
         storeProfile.getName(), storeProfile.getAge(),
         storeProfile.getSex(), storeProfile.getCreatedAt()

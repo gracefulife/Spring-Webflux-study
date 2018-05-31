@@ -2,8 +2,8 @@ package com.example.research.profile.v1.profile;
 
 import com.example.research.profile.entity.cache.Profile;
 import com.example.research.profile.entity.cache.ProfileRepository;
-import com.example.research.profile.entity.event.ProfileChangedEvent;
-import com.example.research.profile.entity.event.ProfileSavedEvent;
+import com.example.research.profile.entity.command.ProfileChangedCommand;
+import com.example.research.profile.entity.command.ProfileSavedCommand;
 import com.example.research.profile.entity.storage.ProfileStorageRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class ProfileHandler {
         saveProfile = profile -> {
       log.info("profile is {}", profile);
       com.example.research.profile.entity.storage.Profile storeProfile = profileStorageRepository.save(profile);
-      applicationEventPublisher.publishEvent(ProfileSavedEvent.from(storeProfile));
+      applicationEventPublisher.publishEvent(ProfileSavedCommand.from(storeProfile));
       return Mono.just(storeProfile);
     };
 
@@ -90,7 +90,7 @@ public class ProfileHandler {
       existProfile.setUpdatedAt(LocalDateTime.now());
       profileStorageRepository.save(existProfile);
 
-      applicationEventPublisher.publishEvent(ProfileChangedEvent.from(existProfile));
+      applicationEventPublisher.publishEvent(ProfileChangedCommand.from(existProfile));
 
       return ok().contentType(MediaType.APPLICATION_JSON).body(fromObject(existProfile))
           .switchIfEmpty(ServerResponse.badRequest().build());
