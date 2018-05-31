@@ -23,7 +23,7 @@ public class ProfileEventListener {
     log.info("onProfileSavedEventReceived received : {}" + command);
     Mono.fromCompletionStage(profileEventHandler.save(command))
         .doOnError(e -> log.error("onProfileSavedEventReceived error : {}", e))
-        .onErrorResume(throwable -> profileRepository.deleteById(command.getId()).flatMap(aVoid -> Mono.empty()))
+        .onErrorResume(e -> profileRepository.deleteById(command.getId()).flatMap(aVoid -> Mono.empty()))
         .subscribe();
   }
 

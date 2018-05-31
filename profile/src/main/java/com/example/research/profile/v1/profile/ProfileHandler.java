@@ -43,7 +43,7 @@ public class ProfileHandler {
   public Mono<ServerResponse> fetch(ServerRequest request) {
     String id = request.pathVariable("id");
     Mono<Profile> profile = profileRepository.findById(id)
-        .onErrorResume(throwable ->
+        .onErrorResume(e ->
             Mono.just(profileStorageRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("profile not found")))
                 .flatMap(storedProfile -> profileRepository.save(Profile.from(storedProfile)))
