@@ -34,6 +34,8 @@ public class Endpoints {
         .andRoute(GET("/api/v1/tags").and(accept(MediaType.APPLICATION_JSON)),
             tagHandler::fetchTags)
         .andRoute(POST("/api/v1/tags").and(accept(MediaType.APPLICATION_JSON)),
-            request -> tagHandler.save(request.bodyToMono(TagSaveRequest.class)));
+            request -> tagHandler.save(request.bodyToMono(TagSaveRequest.class)))
+        .andRoute(GET("/api/v1/tags/{no}").and(accept(MediaType.APPLICATION_JSON)),
+            tagHandler::fetchTag);
   }
 }
