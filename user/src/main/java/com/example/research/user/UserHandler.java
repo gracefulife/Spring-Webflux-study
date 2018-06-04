@@ -14,6 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Component
 public class UserHandler {
   @Autowired UserRepository userRepository;
+  @Autowired ProfileClient profileClient;
 
   public Mono<ServerResponse> fetchAll(ServerRequest request) {
     return ServerResponse.ok()
@@ -31,8 +32,17 @@ public class UserHandler {
   public Mono<ServerResponse> save(Mono<UserRequest> request) {
     return ServerResponse.ok()
         .contentType(APPLICATION_JSON)
-        .body(request.flatMap(userRequest -> userRepository.save(User.from(userRequest)))
-            .map(UserResponse::from), UserResponse.class);
+        .body(
+            request.flatMap(
+                userRequest -> userRepository.save(User.from(userRequest))
+                    .map(user -> {
+                      // send event(message bus) or call api
+                      log.info("request = {}", user);
+                      profileClient.save(ProfileClient.ProfileSaveRequest.from(user));
+                      return user;
+                    })
+            )
+                .map(UserResponse::from), UserResponse.class);
   }
 
   public Mono<ServerResponse> update(ServerRequest request) {

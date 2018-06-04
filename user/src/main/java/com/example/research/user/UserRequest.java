@@ -15,10 +15,6 @@ public class UserRequest implements Serializable {
   private String no;
   private String name;
   private String cellphone;
-
-  public static UserRequest from(User user) {
-    return new UserRequest(
-        user.getNo(), user.getName(), user.getCellphone()
-    );
-  }
+  private String sex; // man or woman
+  private Integer age;
 }

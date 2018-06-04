@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user
+    name: USER-API
 
   sleuth:
     sampler:
@@ -16,10 +16,10 @@ server:
 
 eureka:
   client:
-    registry-fetch-interval-seconds: 5
+    registry-fetch-interval-seconds: 60
     service-url:
       defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8090/eureka}
-    enabled: false # for dev
+    enabled: true # for dev
   instance:
-    lease-renewal-interval-in-seconds: 10
+    lease-renewal-interval-in-seconds: 30
     prefer-ip-address: false

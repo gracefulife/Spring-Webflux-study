@@ -16,7 +16,10 @@ public class User implements Serializable {
   private String name;
   private String cellphone;
 
+  private String sex;
+  private Integer age;
+
   public static User from(UserRequest request) {
-    return new User(null, request.getName(), request.getCellphone());
+    return new User(null, request.getName(), request.getCellphone(), request.getSex(), request.getAge());
   }
 }

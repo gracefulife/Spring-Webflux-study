@@ -1,6 +1,6 @@
 spring:
   application:
-    name: survey
+    name: SURVEY-API
 
   sleuth:
     sampler:
@@ -12,7 +12,7 @@ spring:
       port: 32768
 
 server:
-  port: 8080
+  port: 8084
 
 eureka:
   client:
