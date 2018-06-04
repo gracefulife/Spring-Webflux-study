@@ -1,5 +1,7 @@
 package com.example.research.profile.entity.storage;
 
+import com.example.research.profile.v1.tag.TagSaveRequest;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -41,4 +43,12 @@ public class Tag {
   @CreatedDate
   @LastModifiedDate
   @Column(name = "updated_at") LocalDateTime updatedAt;
+
+  public static Tag from(TagSaveRequest tagSaveRequest) {
+    Tag tag = new Tag();
+    tag.name = tagSaveRequest.getName();
+    tag.createdAt = LocalDateTime.now();
+    tag.updatedAt = LocalDateTime.now();
+    return tag;
+  }
 }
