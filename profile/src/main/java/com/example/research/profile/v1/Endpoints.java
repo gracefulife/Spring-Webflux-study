@@ -1,4 +1,10 @@
-package com.example.research.profile.v1.profile;
+package com.example.research.profile.v1;
+
+
+import com.example.research.profile.v1.profile.ProfileHandler;
+import com.example.research.profile.v1.profile.ProfileSaveRequest;
+import com.example.research.profile.v1.tag.TagHandler;
+import com.example.research.profile.v1.tag.TagSaveRequest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +19,21 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
 @Configuration
-public class ProfileRouter {
-  @Bean RouterFunction<ServerResponse> apis(ProfileHandler handler) {
+public class Endpoints {
+  @Bean RouterFunction<ServerResponse> apis(ProfileHandler profileHandler, TagHandler tagHandler) {
     return RouterFunctions
         .route(GET("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
-            handler::fetchProfiles)
+            profileHandler::fetchProfiles)
         .andRoute(POST("/api/v1/profiles").and(accept(MediaType.APPLICATION_JSON)),
-            request -> handler.save(request.bodyToMono(ProfileSaveRequest.class)))
+            request -> profileHandler.save(request.bodyToMono(ProfileSaveRequest.class)))
         .andRoute(PUT("/api/v1/profiles/{id}").and(accept(MediaType.APPLICATION_JSON)),
-            handler::update)
+            profileHandler::update)
         .andRoute(GET("/api/v1/profiles/{id}").and(accept(MediaType.APPLICATION_JSON)),
-            handler::fetch);
+            profileHandler::fetch)
+
+        .andRoute(GET("/api/v1/tags").and(accept(MediaType.APPLICATION_JSON)),
+            tagHandler::fetchTags)
+        .andRoute(POST("/api/v1/tags").and(accept(MediaType.APPLICATION_JSON)),
+            request -> tagHandler.save(request.bodyToMono(TagSaveRequest.class)));
   }
 }

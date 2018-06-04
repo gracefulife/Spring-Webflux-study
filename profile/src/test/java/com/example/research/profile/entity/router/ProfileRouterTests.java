@@ -85,7 +85,7 @@ public class ProfileRouterTests {
         .accept(MediaType.APPLICATION_JSON)
         .body(BodyInserters.fromObject(profileSaveRequest))
         .exchange()
-        .expectStatus().isOk()
+        .expectStatus().isNoContent()
         .expectBody()
         .jsonPath("$.name").isEqualTo(profileSaveRequest.getName());
   }
