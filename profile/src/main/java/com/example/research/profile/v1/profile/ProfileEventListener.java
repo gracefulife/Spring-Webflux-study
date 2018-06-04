@@ -12,6 +12,11 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+/**
+ * 분산 서버 환경에서는, 해당 이벤트 처리기를 Kafka 등의 메세지버스로 변경하면,
+ * 각 서버간 데이터를 동일하게 유지할 수 있게 된다.
+ * 하지만 순서 보장에 대한 처리들이 빠져있기 때문에, (받았을 때 이벤트 버전을 다시 정렬하는 방식으로 ..)
+ */
 @Slf4j
 @Component
 public class ProfileEventListener {
