@@ -6,12 +6,18 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -34,6 +40,14 @@ public class Tag {
 
   @NonNull
   @Column(name = "name") String name;
+
+  @ElementCollection(fetch = FetchType.LAZY)
+  @CollectionTable(
+      name = "tag_profile_map",
+      joinColumns = {@JoinColumn(name = "tag_no")}
+  )
+  @Column(name = "profile_id")
+  Set<String> profiles = new LinkedHashSet<>();
 
   @NonNull
   @CreatedDate

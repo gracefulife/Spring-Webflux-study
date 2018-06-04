@@ -16,11 +16,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -50,6 +53,30 @@ public class TagRepositoryTests {
       assertEquals(savedTag.getNo(), tag.getNo());
       return tag;
     }).orElseThrow(() -> new IllegalStateException("tag must not be null"));
+  }
+
+  @Test public void 태그_프로필_맵_조회() {
+    // GIVEN
+    final Tag generatedTag = generateData();
+    Set<String> mockProfileSets = new LinkedHashSet<>();
+    mockProfileSets.add(RandomData.alphabetic(16));
+    mockProfileSets.add(RandomData.alphabetic(16));
+    mockProfileSets.add(RandomData.alphabetic(16));
+    generatedTag.setProfiles(mockProfileSets);
+
+    // WHEN
+    Tag savedTag = tagStorageRepository.save(generatedTag);
+    Optional<Tag> foundTag = tagStorageRepository.findById(savedTag.getNo());
+
+    // THEN
+    assertNotNull(savedTag);
+    foundTag.map(tag -> {
+      assertEquals(savedTag.getName(), tag.getName());
+      assertEquals(savedTag.getNo(), tag.getNo());
+      assertFalse(savedTag.getProfiles().isEmpty());
+      return tag;
+    }).orElseThrow(() -> new IllegalStateException("tag must not be null"));
+
   }
 
   private static Tag generateData() {
