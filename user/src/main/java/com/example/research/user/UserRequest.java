@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequest implements Serializable {
-  private String no;
+  private String id;
   private String name;
   private String cellphone;
   private String sex; // man or woman

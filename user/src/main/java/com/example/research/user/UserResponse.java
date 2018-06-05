@@ -8,13 +8,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UserResponse implements Serializable {
-  private String no;
+  private String id;
   private String name;
   private String cellphone;
 
   public static UserResponse from(User user) {
     return new UserResponse(
-        user.getNo(), user.getName(), user.getCellphone()
+        user.getId(), user.getName(), user.getCellphone()
     );
   }
 }

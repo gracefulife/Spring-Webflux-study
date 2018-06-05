@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class User implements Serializable {
   @Id
-  private String no;
+  private String id;
   private String name;
   private String cellphone;
 

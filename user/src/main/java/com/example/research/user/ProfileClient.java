@@ -25,7 +25,7 @@ public interface ProfileClient {
     private String sex; // man, woman
 
     public static ProfileSaveRequest from(User user) {
-      return new ProfileSaveRequest(user.getNo(), user.getName(), user.getAge(), user.getSex());
+      return new ProfileSaveRequest(user.getId(), user.getName(), user.getAge(), user.getSex());
     }
   }
 }
