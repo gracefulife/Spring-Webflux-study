@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: TARGETING
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      host: 192.168.99.100
+      port: 32769
+      database: targeting
+  sleuth:
+    messaging:
+      kafka:
+        enabled: true
+server:
+  port: 8180
+
+eureka:
+  client:
+    registry-fetch-interval-seconds: 60
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:8090/eureka}
+    enabled: false # for dev
+  instance:
+    lease-renewal-interval-in-seconds: 30
+    prefer-ip-address: false
