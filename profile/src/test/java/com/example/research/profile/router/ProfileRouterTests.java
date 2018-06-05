@@ -1,4 +1,4 @@
-package com.example.research.profile.entity.router;
+package com.example.research.profile.router;
 
 import com.example.research.profile.TestApplicationContext;
 import com.example.research.profile.v1.profile.ProfileSaveRequest;
