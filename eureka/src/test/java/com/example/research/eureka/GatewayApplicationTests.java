@@ -1,4 +1,4 @@
-package com.example.research.gateway;
+package com.example.research.eureka;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
