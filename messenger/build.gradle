@@ -42,7 +42,7 @@ dependencies {
     testImplementation('io.projectreactor:reactor-test')
     testImplementation('org.springframework.cloud:spring-cloud-stream-test-support')
 
-    compile 'com.linecorp.bot:line-bot-api-client:2.1.0'
+    compile 'com.linecorp.bot:line-bot-api-client:1.12.0'
 }
 
 dependencyManagement {
