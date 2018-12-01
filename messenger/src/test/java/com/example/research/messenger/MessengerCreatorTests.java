@@ -1,6 +1,5 @@
 package com.example.research.messenger;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +13,14 @@ import reactor.test.StepVerifier;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MessengerApplication.class)
 @ActiveProfiles("local")
-public class MessengerServiceTests {
+public class MessengerCreatorTests {
   // FIXTURE
-  @Autowired MessengerService messengerService;
-  private String message;
-
-  @Before
-  public void setUp() {
-    message = "테스트 메세지입니다.";
-  }
+  @Autowired MessageCreator messageCreator;
 
   @Test
   public void publish_test_message() {
-    StepVerifier.create(messengerService.publishTextMessage(message))
+    StepVerifier.create(messageCreator.createTextMessage("testMessage"))
+        .expectNextCount(1)
         .expectComplete()
         .log()
         .verify();

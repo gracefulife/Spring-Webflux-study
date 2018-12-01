@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class LineMessageReceiver {
   private final Jackson2JsonObjectMapper jackson2JsonObjectMapper;
   private final MessageService messageService;
-
   // Response
   @EventMapping
   public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
