@@ -1,6 +1,7 @@
 package com.example.research.messenger;
 
 import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
 
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,11 @@ public class MessengerService {
   private final MessageCreator messageCreator;
 
   public Mono<Void> publishTextMessage(String message) {
-    return messageCreator.createTextMessage(message)
+    return publishMessage(messageCreator.createTextMessage(message));
+  }
+
+  private Mono<Void> publishMessage(Mono<PushMessage> pushMessageMono) {
+    return pushMessageMono
         .flatMap(pushMessage -> Mono.fromCompletionStage(lineMessagingClient.pushMessage(pushMessage)))
         .flatMap(botApiResponse -> Mono.empty());
   }
