@@ -19,14 +19,33 @@ public class MessengerServiceTests {
   @Autowired MessengerService messengerService;
   private String message;
 
+  private String likertScaleTestQuestion;
+  private String likertScaleTestMessage;
+  private LikertScale likertScale;
+
+
   @Before
   public void setUp() {
     message = "테스트 메세지입니다.";
+
+    likertScaleTestQuestion = "5점 척도 테스트";
+    likertScaleTestMessage = "5점 척도 테스트 메세지 내용";
+    likertScale = new LikertScale("strongDisagree", "disagree", "neither", "agree", "stronglyAgree");
   }
 
   @Test
   public void publish_test_message() {
     StepVerifier.create(messengerService.publishTextMessage(message))
+        .expectComplete()
+        .log()
+        .verify();
+  }
+
+  @Test
+  public void publish_test_likert_message() {
+    StepVerifier.create(messengerService.publishLikertScaleSurveyMessage(
+        likertScaleTestQuestion, likertScaleTestMessage, likertScale
+    ))
         .expectComplete()
         .log()
         .verify();

@@ -20,6 +20,10 @@ public class MessengerService {
     return publishMessage(messageCreator.createTextMessage(message));
   }
 
+  public Mono<Void> publishLikertScaleSurveyMessage(String question, String message, LikertScale likertScale) {
+    return publishMessage(messageCreator.createLikertScaleMessage(question, message, likertScale));
+  }
+
   private Mono<Void> publishMessage(Mono<PushMessage> pushMessageMono) {
     return pushMessageMono
         .flatMap(pushMessage -> Mono.fromCompletionStage(lineMessagingClient.pushMessage(pushMessage)))

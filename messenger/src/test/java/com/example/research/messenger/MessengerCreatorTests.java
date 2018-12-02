@@ -25,4 +25,17 @@ public class MessengerCreatorTests {
         .log()
         .verify();
   }
+
+  @Test
+  public void publish_test_likert_message() {
+    StepVerifier.create(
+        messageCreator.createLikertScaleMessage(
+            "testQuestion", "testMessage",
+            new LikertScale("strongDisagree", "disagree", "neither", "agree", "stronglyAgree")
+        ))
+        .expectNextCount(1)
+        .expectComplete()
+        .log()
+        .verify();
+  }
 }
